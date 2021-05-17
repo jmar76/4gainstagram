@@ -1,4 +1,4 @@
-from flask_sqlalchemy import SQLAlchemy
+# from flask_sqlalchemy import SQLAlchemy
 import os
 import sys
 from sqlalchemy import Column, ForeignKey, Integer, String
@@ -8,7 +8,7 @@ from sqlalchemy import create_engine
 from eralchemy import render_er
 
 Base = declarative_base()
-db=SQLAlchemy()
+# db=SQLAlchemy()
 
 class User(Base):
     __tablename__ = 'user'
@@ -36,13 +36,11 @@ class Post(Base):
     # Here we define columns for the table address.
     # Notice that each column is also a normal Python instance attribute.
     ID = Column(Integer, primary_key=True)
-    user_id =  Column(integer,nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     image =  Column(String(250),nullable=False)
     text =  Column(String(250),nullable=False)
 
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     user = db.relationship("user", back_populates="post")
-
     comments = db.relationship("comment", uselist=False, back_populates="posts")
 
 class Comment(Base):
@@ -50,14 +48,11 @@ class Comment(Base):
     # Here we define columns for the table address.
     # Notice that each column is also a normal Python instance attribute.
     ID = Column(Integer, primary_key=True)
-    author_comment_id = Column(integer, nullable=False)
-    post_id = Column(integer, nullable=False)
+    author_comment_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    post_id = db.Column(db.Integer, db.ForeignKey("post.id"))
     text =  Column(String(250), nullable=False)
 
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     user = db.relationship("user", back_populates="comments")
-
-    post_id = db.Column(db.Integer, db.ForeignKey("post.id"))
     post = db.relationship("post", back_populates="comments")
 
 
