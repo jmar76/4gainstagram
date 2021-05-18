@@ -21,39 +21,43 @@ class User(Base):
     age = Column(String(250), nullable=False)
     image = Column(String(250), nullable=False)
 
-    posts = db.relationship("post", uselist=False, back_populates="user")
-    comments = db.relationship("comment", uselist=False, back_populates="user")
+    posts = relationship("post", uselist=False, back_populates="user")
+    comments = relationship("comment", uselist=False, back_populates="user")
 
 class Follower(Base):
     __tablename__ = 'follower'
     # Here we define columns for the table address.
     # Notice that each column is also a normal Python instance attribute.
-    user_from_id = Column(integer,nullable=False)
-    user_to_id = Column(integer,nullable=False)
+    ID = Column(Integer, primary_key=True)
+    user_from_id = Column(Integer,ForeignKey("user.id"))
+    user_to_id = Column(Integer,ForeignKey("user.id"))
+
+    users = relationship("user", uselist=False, back_populates="followers")
+
 
 class Post(Base):
     __tablename__ = 'post'
     # Here we define columns for the table address.
     # Notice that each column is also a normal Python instance attribute.
     ID = Column(Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    user_id = Column(Integer, ForeignKey("user.id"))
     image =  Column(String(250),nullable=False)
     text =  Column(String(250),nullable=False)
 
-    user = db.relationship("user", back_populates="post")
-    comments = db.relationship("comment", uselist=False, back_populates="posts")
+    user = relationship("user", back_populates="post")
+    comments = relationship("comment", uselist=False, back_populates="posts")
 
 class Comment(Base):
     __tablename__ = 'comment'
     # Here we define columns for the table address.
     # Notice that each column is also a normal Python instance attribute.
     ID = Column(Integer, primary_key=True)
-    author_comment_id = db.Column(db.Integer, db.ForeignKey("user.id"))
-    post_id = db.Column(db.Integer, db.ForeignKey("post.id"))
+    author_comment_id = Column(Integer, ForeignKey("user.id"))
+    post_id = Column(Integer, ForeignKey("post.id"))
     text =  Column(String(250), nullable=False)
 
-    user = db.relationship("user", back_populates="comments")
-    post = db.relationship("post", back_populates="comments")
+    user = relationship("user", back_populates="comments")
+    post = relationship("post", back_populates="comments")
 
 
 
